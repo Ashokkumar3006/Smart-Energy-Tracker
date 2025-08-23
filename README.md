@@ -225,32 +225,6 @@ The frontend is built with a component-based architecture:
 - **Alert Management**: Threshold settings and notification preferences
 - **Utilities**: Bill calculator, metric cards, and UI components
 
-#### Component Structure
-\`\`\`
-components/
-├── Core Dashboard
-│   ├── professional-dashboard.tsx
-│   ├── professional-header.tsx
-│   ├── professional-sidebar.tsx
-│   └── professional-metrics.tsx
-├── Device Management
-│   ├── device-monitoring.tsx
-│   ├── device-overview.tsx
-│   └── device-threshold-overview.tsx
-├── Analytics & Visualization
-│   ├── analytics.tsx
-│   ├── energy-chart.tsx
-│   ├── professional-chart.tsx
-│   └── holographic-chart.tsx
-├── AI & Automation
-│   ├── ai-assistant.tsx
-│   ├── energy-suggestions.tsx
-│   └── parameter-explanation.tsx
-└── Alert System
-    ├── alert-management.tsx
-    └── connection-status.tsx
-\`\`\`
-
 ### Backend Services Architecture
 
 ![Backend Architecture](./public/images/backend-architecture.png)
