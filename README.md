@@ -201,94 +201,121 @@ Efficiency Analysis → Optimization Recommendations
 
 ### System Architecture Overview
 
+![System Architecture](./public/images/system-architecture.png)
+
+The WattsUp platform follows a modern, scalable architecture with clear separation of concerns:
+
+- **Frontend Layer**: Next.js application with React components and TypeScript
+- **API Gateway**: Flask-based REST API with CORS support and error handling
+- **AI/ML Layer**: OpenAI integration with custom machine learning models
+- **Data Layer**: SQLite database with file storage and caching
+- **Services Layer**: Email service, alert system, and background tasks
+
+### Frontend Architecture
+
+![Frontend Architecture](./public/images/frontend-architecture.png)
+
+The frontend is built with a component-based architecture:
+
+#### Core Components
+- **Dashboard Components**: Professional dashboard, metrics, and header
+- **Device Management**: Real-time monitoring and threshold management
+- **Analytics & Visualization**: Interactive charts and reporting tools
+- **AI Assistant**: Chat interface with streaming responses
+- **Alert Management**: Threshold settings and notification preferences
+- **Utilities**: Bill calculator, metric cards, and UI components
+
+#### Component Structure
 \`\`\`
-┌─────────────────────────────────────────────────────────────────────────────┐
-│                              WattsUp Architecture                           │
-├─────────────────────────────────────────────────────────────────────────────┤
-│                                                                             │
-│  ┌─────────────────┐    ┌─────────────────┐    ┌─────────────────┐         │
-│  │   Frontend      │    │   API Gateway   │    │   AI/ML Layer   │         │
-│  │                 │    │                 │    │                 │         │
-│  │ • Next.js 14    │◄──►│ • Flask REST    │◄──►│ • OpenAI GPT-4  │         │
-│  │ • React 18      │    │ • CORS Support  │    │ • Scikit-learn  │         │
-│  │ • TypeScript    │    │ • Error Handler │    │ • Pandas        │         │
-│  │ • Tailwind CSS  │    │ • Rate Limiting │    │ • NumPy         │         │
-│  │ • shadcn/ui     │    │ • Authentication│    │ • Custom Models │         │
-│  └─────────────────┘    └─────────────────┘    └─────────────────┘         │
-│           │                       │                       │                 │
-│           │                       │                       │                 │
-│  ┌─────────────────┐    ┌─────────────────┐    ┌─────────────────┐         │
-│  │  User Interface │    │  Data Layer     │    │  Services       │         │
-│  │                 │    │                 │    │                 │         │
-│  │ • Dashboard     │    │ • SQLite DB     │◄──►│ • Email Service │         │
-│  │ • Device Monitor│    │ • CSV Storage   │    │ • Alert System │         │
-│  │ • Analytics     │    │ • JSON Config   │    │ • Background    │         │
-│  │ • AI Assistant  │    │ • File System   │    │   Tasks         │         │
-│  │ • Alert Manager │    │ • Data Models   │    │ • Scheduler     │         │
-│  └─────────────────┘    └─────────────────┘    └─────────────────┘         │
-│                                                                             │
-└─────────────────────────────────────────────────────────────────────────────┘
+components/
+├── Core Dashboard
+│   ├── professional-dashboard.tsx
+│   ├── professional-header.tsx
+│   ├── professional-sidebar.tsx
+│   └── professional-metrics.tsx
+├── Device Management
+│   ├── device-monitoring.tsx
+│   ├── device-overview.tsx
+│   └── device-threshold-overview.tsx
+├── Analytics & Visualization
+│   ├── analytics.tsx
+│   ├── energy-chart.tsx
+│   ├── professional-chart.tsx
+│   └── holographic-chart.tsx
+├── AI & Automation
+│   ├── ai-assistant.tsx
+│   ├── energy-suggestions.tsx
+│   └── parameter-explanation.tsx
+└── Alert System
+    ├── alert-management.tsx
+    └── connection-status.tsx
 \`\`\`
 
-### Detailed Component Architecture
+### Backend Services Architecture
 
-#### Frontend Layer
-\`\`\`
-┌─────────────────────────────────────────────────────────────────┐
-│                        Frontend Components                      │
-├─────────────────────────────────────────────────────────────────┤
-│                                                                 │
-│  ┌─────────────────┐  ┌─────────────────┐  ┌─────────────────┐ │
-│  │   Dashboard     │  │ Device Monitor  │  │   Analytics     │ │
-│  │                 │  │                 │  │                 │ │
-│  │ • Metrics Cards │  │ • Real-time     │  │ • Charts        │ │
-│  │ • Energy Chart  │  │   Status        │  │ • Reports       │ │
-│  │ • Quick Actions │  │ • Efficiency    │  │ • Comparisons   │ │
-│  │ • Alerts        │  │ • Suggestions   │  │ • Trends        │ │
-│  └─────────────────┘  └─────────────────┘  └─────────────────┘ │
-│                                                                 │
-│  ┌─────────────────┐  ┌─────────────────┐  ┌─────────────────┐ │
-│  │  AI Assistant   │  │ Alert Manager   │  │ Bill Calculator │ │
-│  │                 │  │                 │  │                 │ │
-│  │ • Chat Interface│  │ • Threshold     │  │ • Tariff        │ │
-│  │ • Tool Calling  │  │   Settings      │  │   Calculator    │ │
-│  │ • Streaming     │  │ • Recipients    │  │ • Predictions   │ │
-│  │ • Context       │  │ • History       │  │ • Breakdowns    │ │
-│  └─────────────────┘  └─────────────────┘  └─────────────────┘ │
-│                                                                 │
-└─────────────────────────────────────────────────────────────────┘
-\`\`\`
+![Backend Architecture](./public/images/backend-architecture.png)
 
-#### Backend Services Architecture
-\`\`\`
-┌─────────────────────────────────────────────────────────────────┐
-│                       Backend Services                         │
-├─────────────────────────────────────────────────────────────────┤
-│                                                                 │
-│  ┌─────────────────┐  ┌─────────────────┐  ┌─────────────────┐ │
-│  │ Data Processing │  │   ML Pipeline   │  │  Alert System   │ │
-│  │                 │  │                 │  │                 │ │
-│  │ • CSV Parser    │  │ • Isolation     │  │ • Threshold     │ │
-│  │ • Data Cleaner  │  │   Forest        │  │   Monitor       │ │
-│  │ • Validator     │  │ • Linear        │  │ • Email Queue   │ │
-│  │ • Transformer   │  │   Regression    │  │ • Notification  │ │
-│  └─────────────────┘  └─────────────────┘  └─────────────────┘ │
-│                                                                 │
-│  ┌─────────────────┐  ┌─────────────────┐  ┌─────────────────┐ │
-│  │   API Gateway   │  │  AI Integration │  │ Background Jobs │ │
-│  │                 │  │                 │  │                 │ │
-│  │ • Route Handler │  │ • OpenAI Client │  │ • Anomaly Check │ │
-│  │ • Middleware    │  │ • Tool Registry │  │ • Data Sync     │ │
-│  │ • Error Handler │  │ • Prompt Engine │  │ • Report Gen    │ │
-│  │ • Response      │  │ • Context Mgmt  │  │ • Cleanup       │ │
-│  └─────────────────┘  └─────────────────┘  └─────────────────┘ │
-│                                                                 │
-└─────────────────────────────────────────────────────────────────┘
-\`\`\`
+The backend services are organized into distinct layers:
 
-#### Database Schema
+#### API Layer
+- **Data Management APIs**: Upload, health checks, device listings
+- **Analytics APIs**: Peak analysis, predictions, suggestions
+- **Device APIs**: Individual device details and thresholds
+- **Alert APIs**: Settings, recipients, history, and testing
+
+#### Processing Layer
+- **Data Processing**: CSV parsing, validation, and transformation
+- **ML Pipeline**: Anomaly detection and prediction models
+- **Alert System**: Threshold monitoring and notifications
+- **AI Integration**: OpenAI client and tool registry
+
+#### Service Layer
+- **Background Jobs**: Continuous monitoring and maintenance
+- **Email Service**: SMTP integration and template management
+- **Database Service**: SQLite operations and data models
+
+### Data Flow Architecture
+
+![Data Flow Diagram](./public/images/data-flow-diagram.png)
+
+The data flows through the system in the following stages:
+
+1. **Data Ingestion**: Smart devices → CSV upload → Validation
+2. **Processing**: Pandas/NumPy → Cleaning → Transformation
+3. **Storage**: SQLite database → File system → Cache layer
+4. **Analysis**: Analytics → ML models → AI assistant
+5. **Output**: Dashboard → Alerts → API responses
+
+### Machine Learning Pipeline
+
+![ML Pipeline](./public/images/ml-pipeline.png)
+
+The ML pipeline processes energy data through multiple stages:
+
+#### Input Processing
+- Raw energy data (Power, Voltage, Current, Energy, Timestamp)
+- Feature engineering (temporal features, rolling statistics)
+- Data normalization and cleaning
+
+#### Model Training & Inference
+- **Anomaly Detection**: Isolation Forest for outlier detection
+- **Prediction Models**: Linear regression for consumption forecasting
+- **AI Assistant**: OpenAI integration with custom tools
+
+#### Output Generation
+- **Alerts**: Peak power, energy spikes, device anomalies
+- **Predictions**: Energy usage, cost forecasts, trend analysis
+- **Recommendations**: Usage tips, optimization, scheduling
+
+### Database Schema
+
+![Database Schema](./public/images/database-schema.png)
+
+The database schema includes the following core tables:
+
+#### Core Tables
 \`\`\`sql
--- Core Tables
+-- Energy Data Storage
 CREATE TABLE energy_data (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     device_name TEXT NOT NULL,
@@ -307,11 +334,10 @@ CREATE TABLE alert_settings (
     setting_name TEXT NOT NULL,
     device_name TEXT,
     threshold_value REAL NOT NULL,
-    threshold_type TEXT NOT NULL CHECK (threshold_type IN ('greater_than', 'less_than', 'equal_to')),
+    threshold_type TEXT NOT NULL,
     is_enabled BOOLEAN DEFAULT TRUE,
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-    updated_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-    UNIQUE(setting_name, device_name)
+    updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
 );
 
 -- Email Recipients
@@ -320,7 +346,7 @@ CREATE TABLE email_recipients (
     email TEXT UNIQUE NOT NULL,
     name TEXT,
     is_active BOOLEAN DEFAULT TRUE,
-    alert_types TEXT NOT NULL, -- JSON array
+    alert_types TEXT NOT NULL,
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP
 );
 
@@ -332,130 +358,17 @@ CREATE TABLE alert_history (
     threshold_value REAL NOT NULL,
     actual_value REAL NOT NULL,
     message TEXT NOT NULL,
-    recipients_sent TEXT NOT NULL, -- JSON array
-    status TEXT DEFAULT 'sent' CHECK (status IN ('sent', 'failed', 'pending')),
+    recipients_sent TEXT NOT NULL,
+    status TEXT DEFAULT 'sent',
     sent_at DATETIME DEFAULT CURRENT_TIMESTAMP
 );
-
--- Indexes for Performance
-CREATE INDEX idx_energy_data_device_timestamp ON energy_data(device_name, timestamp);
-CREATE INDEX idx_alert_settings_enabled ON alert_settings(is_enabled);
-CREATE INDEX idx_alert_history_type_device ON alert_history(alert_type, device_name);
 \`\`\`
 
-#### AI/ML Pipeline Architecture
-\`\`\`
-┌─────────────────────────────────────────────────────────────────┐
-│                      AI/ML Pipeline                            │
-├─────────────────────────────────────────────────────────────────┤
-│                                                                 │
-│  Input Data                                                     │
-│  ┌─────────────────┐                                           │
-│  │ Raw Energy Data │                                           │
-│  │ • Power (W)     │                                           │
-│  │ • Voltage (V)   │                                           │
-│  │ • Current (A)   │                                           │
-│  │ • Energy (kWh)  │                                           │
-│  │ • Timestamp     │                                           │
-│  │ • Device Name   │                                           │
-│  └─────────────────┘                                           │
-│           │                                                     │
-│           ▼                                                     │
-│  ┌─────────────────┐                                           │
-│  │Feature Engineer │                                           │
-│  │ • Temporal      │                                           │
-│  │   Features      │                                           │
-│  │ • Rolling Stats │                                           │
-│  │ • Change Rates  │                                           │
-│  │ • Efficiency    │                                           │
-│  │   Metrics       │                                           │
-│  └─────────────────┘                                           │
-│           │                                                     │
-│           ▼                                                     │
-│  ┌─────────────────┐  ┌─────────────────┐  ┌─────────────────┐ │
-│  │ Anomaly Model   │  │Prediction Model │  │ AI Assistant    │ │
-│  │                 │  │                 │  │                 │ │
-│  │ • Isolation     │  │ • Linear        │  │ • OpenAI GPT-4  │ │
-│  │   Forest        │  │   Regression    │  │ • Custom Tools  │ │
-│  │ • Threshold     │  │ • Time Series   │  │ • Context Aware │ │
-│  │   Detection     │  │   Analysis      │  │ • Streaming     │ │
-│  │ • Pattern       │  │ • Bill          │  │ • Tool Calling  │ │
-│  │   Recognition   │  │   Forecasting   │  │ • Memory        │ │
-│  └─────────────────┘  └─────────────────┘  └─────────────────┘ │
-│           │                     │                     │         │
-│           ▼                     ▼                     ▼         │
-│  ┌─────────────────┐  ┌─────────────────┐  ┌─────────────────┐ │
-│  │     Alerts      │  │   Predictions   │  │ Recommendations │ │
-│  │                 │  │                 │  │                 │ │
-│  │ • Peak Power    │  │ • Energy Usage  │  │ • Usage Tips    │ │
-│  │ • Energy Spike  │  │ • Cost Forecast │  │ • Optimization  │ │
-│  │ • Device        │  │ • Trend         │  │ • Scheduling    │ │
-│  │   Anomaly       │  │   Analysis      │  │ • Efficiency    │ │
-│  │ • Efficiency    │  │ • Seasonal      │  │ • Cost Savings  │ │
-│  │   Drop          │  │   Patterns      │  │ • Maintenance   │ │
-│  └─────────────────┘  └─────────────────┘  └─────────────────┘ │
-│                                                                 │
-└─────────────────────────────────────────────────────────────────┘
-\`\`\`
-
-#### Data Flow Architecture
-\`\`\`
-┌─────────────────────────────────────────────────────────────────┐
-│                        Data Flow                               │
-├─────────────────────────────────────────────────────────────────┤
-│                                                                 │
-│  Smart Devices                                                  │
-│  ┌─────────────────┐                                           │
-│  │ • Smart Plugs   │                                           │
-│  │ • Energy Meters │                                           │
-│  │ • IoT Sensors   │                                           │
-│  └─────────────────┘                                           │
-│           │                                                     │
-│           ▼                                                     │
-│  ┌─────────────────┐                                           │
-│  │  Data Ingestion │                                           │
-│  │ • CSV Upload    │                                           │
-│  │ • API Endpoints │                                           │
-│  │ • File Parser   │                                           │
-│  │ • Validation    │                                           │
-│  └─────────────────┘                                           │
-│           │                                                     │
-│           ▼                                                     │
-│  ┌─────────────────┐                                           │
-│  │ Data Processing │                                           │
-│  │ • Pandas        │                                           │
-│  │ • NumPy         │                                           │
-│  │ • Cleaning      │                                           │
-│  │ • Transformation│                                           │
-│  └─────────────────┘                                           │
-│           │                                                     │
-│           ▼                                                     │
-│  ┌─────────────────┐                                           │
-│  │   Storage       │                                           │
-│  │ • SQLite DB     │                                           │
-│  │ • File System   │                                           │
-│  │ • Cache Layer   │                                           │
-│  │ • Backup        │                                           │
-│  └─────────────────┘                                           │
-│           │                                                     │
-│           ▼                                                     │
-│  ┌─────────────────┐  ┌─────────────────┐  ┌─────────────────┐ │
-│  │   Analytics     │  │   ML Models     │  │  AI Assistant   │ │
-│  │ • Aggregation   │  │ • Training      │  │ • Query Engine  │ │
-│  │ • Metrics       │  │ • Prediction    │  │ • Response Gen  │ │
-│  │ • Reporting     │  │ • Anomaly Det   │  │ • Context Mgmt  │ │
-│  └─────────────────┘  └─────────────────┘  └─────────────────┘ │
-│           │                     │                     │         │
-│           ▼                     ▼                     ▼         │
-│  ┌─────────────────┐  ┌─────────────────┐  ┌─────────────────┐ │
-│  │   Dashboard     │  │     Alerts      │  │   API Response  │ │
-│  │ • Visualizations│  │ • Email Notify  │  │ • JSON Data     │ │
-│  │ • Real-time     │  │ • SMS (Future)  │  │ • Streaming     │ │
-│  │ • Interactive   │  │ • Push Notify   │  │ • Error Handle  │ │
-│  └─────────────────┘  └─────────────────┘  └─────────────────┘ │
-│                                                                 │
-└─────────────────────────────────────────────────────────────────┘
-\`\`\`
+#### Relationships
+- Energy data is linked to devices and timestamps
+- Alert settings can be device-specific or global
+- Alert history tracks all notifications sent
+- Email recipients can subscribe to specific alert types
 
 ---
 
@@ -676,8 +589,6 @@ const Dashboard = ({ data }) => {
 - **Policy Influence**: Data-driven insights for energy policy development
 
 ---
-
-
 
 
 ## CREATE A VIRTUAL ENVIRONMENT 
