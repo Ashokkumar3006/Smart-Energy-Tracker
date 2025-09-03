@@ -17,16 +17,23 @@ export default function Analytics({ energyData, dashboardData, deviceData }: Ana
   const deviceEntries = Object.entries(deviceData)
   const totalDevices = deviceEntries.length
   const activeDevices = deviceEntries.filter(([_, data]: [string, any]) => data.currentPower > 0).length
-  const avgEfficiency =
-    totalDevices > 0
-      ? deviceEntries.reduce((sum, [_, data]: [string, any]) => sum + data.efficiency, 0) / totalDevices
-      : 0
+
+  // New categorical efficiency model
+  const properCount =
+    totalDevices > 0 ? deviceEntries.filter(([_, data]: [string, any]) => data.efficiencyStatus === "proper").length : 0
+  const improperCount = totalDevices - properCount
+  const properRate = totalDevices > 0 ? (properCount / totalDevices) * 100 : 0
 
   const performanceMetrics = [
-    { label: "Overall Efficiency", value: avgEfficiency, target: 90, color: "blue" },
-    { label: "Cost Optimization", value: 73, target: 80, color: "green" },
+    { label: "Proper Devices", value: properRate, target: 90, color: "green" },
+    { label: "Cost Optimization", value: 73, target: 80, color: "emerald" },
     { label: "Peak Load Management", value: 65, target: 75, color: "orange" },
-    { label: "Device Utilization", value: (activeDevices / totalDevices) * 100 || 0, target: 85, color: "purple" },
+    {
+      label: "Device Utilization",
+      value: (activeDevices / Math.max(totalDevices, 1)) * 100,
+      target: 85,
+      color: "purple",
+    },
   ]
 
   return (
@@ -51,7 +58,7 @@ export default function Analytics({ energyData, dashboardData, deviceData }: Ana
 
       {/* Performance Overview */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        {performanceMetrics.map((metric, index) => (
+        {performanceMetrics.map((metric) => (
           <Card key={metric.label}>
             <CardContent className="p-6">
               <div className="flex items-center justify-between mb-4">
@@ -105,8 +112,10 @@ export default function Analytics({ energyData, dashboardData, deviceData }: Ana
                     <div className="text-gray-500">Energy</div>
                   </div>
                   <div className="text-center">
-                    <div className="font-medium text-purple-600">{data.efficiency.toFixed(1)}%</div>
-                    <div className="text-gray-500">Efficiency</div>
+                    <Badge variant={data.efficiencyStatus === "proper" ? "default" : "destructive"}>
+                      {data.efficiencyStatus === "proper" ? "Proper" : "Improper"}
+                    </Badge>
+                    <div className="text-gray-500 mt-1">Status</div>
                   </div>
                 </div>
               </div>
@@ -233,18 +242,49 @@ export default function Analytics({ energyData, dashboardData, deviceData }: Ana
         </TabsContent>
 
         <TabsContent value="efficiency" className="space-y-6">
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-            {deviceEntries.slice(0, 3).map(([deviceName, data]: [string, any]) => (
+          {/* Status Overview */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <Card>
+              <CardHeader>
+                <CardTitle>Overall Status</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-3">
+                <div className="flex items-center justify-between">
+                  <span className="text-sm text-gray-600">Proper</span>
+                  <span className="text-lg font-bold text-green-600">{properCount}</span>
+                </div>
+                <div className="flex items-center justify-between">
+                  <span className="text-sm text-gray-600">Improper</span>
+                  <span className="text-lg font-bold text-red-600">{improperCount}</span>
+                </div>
+                <div className="pt-2">
+                  <div className="flex items-center justify-between text-sm mb-1">
+                    <span className="text-gray-600">Proper Rate</span>
+                    <span className="font-medium">{properRate.toFixed(1)}%</span>
+                  </div>
+                  <Progress value={properRate} className="h-2" />
+                </div>
+              </CardContent>
+            </Card>
+
+            {deviceEntries.slice(0, 2).map(([deviceName, data]: [string, any]) => (
               <Card key={deviceName}>
                 <CardHeader>
-                  <CardTitle>{deviceName} Efficiency</CardTitle>
+                  <CardTitle>{deviceName} Status</CardTitle>
                 </CardHeader>
                 <CardContent className="text-center">
-                  <div className="text-4xl font-bold text-green-600 mb-2">{data.efficiency.toFixed(1)}%</div>
-                  <p className="text-sm text-gray-600 mb-4">
-                    {data.efficiency >= 90 ? "Excellent" : data.efficiency >= 80 ? "Good" : "Needs improvement"}
+                  <div
+                    className={`text-3xl font-bold mb-2 ${
+                      data.efficiencyStatus === "proper" ? "text-green-600" : "text-red-600"
+                    }`}
+                  >
+                    {data.efficiencyStatus === "proper" ? "Proper" : "Improper"}
+                  </div>
+                  <p className="text-sm text-gray-600">
+                    {data.efficiencyStatus === "proper"
+                      ? "Within expected operating pattern"
+                      : "Unstable pattern detected - review suggested"}
                   </p>
-                  <Progress value={data.efficiency} className="h-2" />
                 </CardContent>
               </Card>
             ))}
@@ -252,19 +292,16 @@ export default function Analytics({ energyData, dashboardData, deviceData }: Ana
 
           <Card>
             <CardHeader>
-              <CardTitle>Efficiency Trends</CardTitle>
+              <CardTitle>Efficiency Status by Device</CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="space-y-4">
+              <div className="space-y-3">
                 {deviceEntries.map(([deviceName, data]: [string, any]) => (
                   <div key={deviceName} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
                     <span className="font-medium">{deviceName}</span>
-                    <div className="flex items-center space-x-4">
-                      <div className="w-32">
-                        <Progress value={data.efficiency} className="h-2" />
-                      </div>
-                      <span className="text-sm font-medium w-12">{data.efficiency.toFixed(1)}%</span>
-                    </div>
+                    <Badge variant={data.efficiencyStatus === "proper" ? "default" : "destructive"}>
+                      {data.efficiencyStatus === "proper" ? "Proper" : "Improper"}
+                    </Badge>
                   </div>
                 ))}
               </div>
@@ -312,19 +349,10 @@ export default function Analytics({ energyData, dashboardData, deviceData }: Ana
               <CardContent>
                 <div className="space-y-3">
                   <div className="p-3 bg-green-50 border border-green-200 rounded-lg">
-                    <div className="font-medium text-green-800 mb-1">High Efficiency Devices</div>
+                    <div className="font-medium text-green-800 mb-1">Proper Devices</div>
                     <div className="text-sm text-green-700">
                       {deviceEntries
-                        .filter(([_, data]: [string, any]) => data.efficiency >= 90)
-                        .map(([name]) => name)
-                        .join(", ") || "None"}
-                    </div>
-                  </div>
-                  <div className="p-3 bg-yellow-50 border border-yellow-200 rounded-lg">
-                    <div className="font-medium text-yellow-800 mb-1">Moderate Efficiency</div>
-                    <div className="text-sm text-yellow-700">
-                      {deviceEntries
-                        .filter(([_, data]: [string, any]) => data.efficiency >= 80 && data.efficiency < 90)
+                        .filter(([_, data]: [string, any]) => data.efficiencyStatus === "proper")
                         .map(([name]) => name)
                         .join(", ") || "None"}
                     </div>
@@ -333,7 +361,7 @@ export default function Analytics({ energyData, dashboardData, deviceData }: Ana
                     <div className="font-medium text-red-800 mb-1">Needs Attention</div>
                     <div className="text-sm text-red-700">
                       {deviceEntries
-                        .filter(([_, data]: [string, any]) => data.efficiency < 80)
+                        .filter(([_, data]: [string, any]) => data.efficiencyStatus === "improper")
                         .map(([name]) => name)
                         .join(", ") || "None"}
                     </div>

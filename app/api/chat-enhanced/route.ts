@@ -39,7 +39,6 @@ export async function POST(req: Request) {
         getGeneralEnergySuggestions,
         getWeatherData,
       },
-      maxToolRoundtrips: 3,
     })
 
     console.log("Step 1 complete. Tool calls made:", dataGatheringResult.toolCalls?.length || 0)
@@ -53,7 +52,7 @@ export async function POST(req: Request) {
     if (dataGatheringResult.toolResults && dataGatheringResult.toolResults.length > 0) {
       toolResultsContext = "\n\nBased on the following energy data:\n"
       dataGatheringResult.toolResults.forEach((result, index) => {
-        toolResultsContext += `\nTool ${index + 1} Result: ${JSON.stringify(result.result, null, 2)}\n`
+        toolResultsContext += `\nTool ${index + 1} Result: ${JSON.stringify(result.output, null, 2)}\n`
       })
     }
 

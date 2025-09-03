@@ -4,7 +4,6 @@ import { useState, useEffect, useCallback } from "react"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Badge } from "@/components/ui/badge"
-import { Progress } from "@/components/ui/progress"
 import { Button } from "@/components/ui/button"
 import {
   AirVent,
@@ -15,7 +14,7 @@ import {
   Zap,
   AlertCircle,
   BarChart3,
-  LightbulbIcon as BulbIcon,
+  BellIcon as BulbIcon,
   TrendingUp,
   Loader2,
   CalendarDays,
@@ -26,7 +25,7 @@ import ProfessionalChart from "@/components/professional-chart"
 interface DeviceMonitoringProps {
   deviceData: any
   connection: any
-  onTabChange: (tab: string) => void // Add this prop
+  onTabChange: (tab: string) => void
 }
 
 interface DeviceDetails {
@@ -35,7 +34,7 @@ interface DeviceDetails {
   total_energy: number
   peak_usage: number
   average_power: number
-  efficiency: number
+  efficiency_status: "proper" | "improper"
   is_active: boolean
   hourly_usage: { [hour: string]: number }
   daily_usage: { [date: string]: number }
@@ -52,7 +51,7 @@ const deviceIcons = {
   AC: AirVent,
   Fridge: Refrigerator,
   Television: Tv,
-  "Washing Machine": Zap, // Using Zap for general appliance
+  "Washing Machine": Zap,
   Light: Lightbulb,
   Fan: Fan,
 }
@@ -132,6 +131,7 @@ export default function DeviceMonitoring({ deviceData, connection, onTabChange }
         {devices.map(([deviceName, data]: [string, any]) => {
           const IconComponent = deviceIcons[deviceName as keyof typeof deviceIcons] || Zap
           const color = deviceColors[deviceName as keyof typeof deviceColors] || "gray"
+          const status: "proper" | "improper" = data.efficiencyStatus === "proper" ? "proper" : "improper"
 
           return (
             <Card
@@ -167,12 +167,11 @@ export default function DeviceMonitoring({ deviceData, connection, onTabChange }
                   </div>
                 </div>
 
-                <div className="space-y-2">
-                  <div className="flex justify-between text-sm">
-                    <span className="text-gray-600">Efficiency</span>
-                    <span className="font-medium">{data.efficiency.toFixed(1)}%</span>
-                  </div>
-                  <Progress value={data.efficiency} className="h-2" />
+                <div className="flex items-center justify-between text-sm">
+                  <span className="text-gray-600">Efficiency</span>
+                  <Badge variant={status === "proper" ? "default" : "destructive"}>
+                    {status === "proper" ? "Proper" : "Improper"}
+                  </Badge>
                 </div>
 
                 <div className="flex justify-between text-sm">
@@ -252,10 +251,14 @@ export default function DeviceMonitoring({ deviceData, connection, onTabChange }
 
                     <Card>
                       <CardContent className="pt-6 text-center">
-                        <div className="text-2xl font-bold text-purple-600 mb-2">
-                          {selectedDeviceDetails.efficiency.toFixed(1)}%
+                        <div
+                          className={`text-2xl font-bold mb-2 ${
+                            selectedDeviceDetails.efficiency_status === "proper" ? "text-green-600" : "text-red-600"
+                          }`}
+                        >
+                          {selectedDeviceDetails.efficiency_status === "proper" ? "Proper" : "Improper"}
                         </div>
-                        <p className="text-sm text-gray-600">Efficiency</p>
+                        <p className="text-sm text-gray-600">Efficiency Status</p>
                       </CardContent>
                     </Card>
                   </div>
@@ -353,19 +356,21 @@ export default function DeviceMonitoring({ deviceData, connection, onTabChange }
 
                 <TabsContent value="suggestions" className="space-y-6">
                   <div className="grid grid-cols-1 gap-4">
-                    {selectedDeviceDetails.suggestions?.map((suggestion: string, index: number) => (
-                      <Card key={index} className="border-l-4 border-l-blue-500">
-                        <CardContent className="pt-4">
-                          <div className="flex items-start space-x-3">
-                            <BulbIcon className="h-5 w-5 text-blue-600 mt-0.5" />
-                            <div>
-                              <p className="text-sm font-medium text-gray-900 mb-1">Recommendation #{index + 1}</p>
-                              <p className="text-sm text-gray-700">{suggestion}</p>
+                    {selectedDeviceDetails.suggestions?.length ? (
+                      selectedDeviceDetails.suggestions.map((suggestion: string, index: number) => (
+                        <Card key={index} className="border-l-4 border-l-blue-500">
+                          <CardContent className="pt-4">
+                            <div className="flex items-start space-x-3">
+                              <BulbIcon className="h-5 w-5 text-blue-600 mt-0.5" />
+                              <div>
+                                <p className="text-sm font-medium text-gray-900 mb-1">Recommendation #{index + 1}</p>
+                                <p className="text-sm text-gray-700">{suggestion}</p>
+                              </div>
                             </div>
-                          </div>
-                        </CardContent>
-                      </Card>
-                    )) || (
+                          </CardContent>
+                        </Card>
+                      ))
+                    ) : (
                       <Card>
                         <CardContent className="pt-6 text-center">
                           <BulbIcon className="h-12 w-12 mx-auto mb-4 text-gray-300" />

@@ -2,7 +2,6 @@
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
-import { Progress } from "@/components/ui/progress"
 import { AirVent, Refrigerator, Tv, Lightbulb, Fan, Zap, AlertCircle } from "lucide-react"
 
 interface DeviceOverviewProps {
@@ -58,6 +57,7 @@ export default function DeviceOverview({ deviceData }: DeviceOverviewProps) {
           {devices.map(([deviceName, data]: [string, any]) => {
             const IconComponent = deviceIcons[deviceName as keyof typeof deviceIcons] || Zap
             const colorClass = deviceColors[deviceName as keyof typeof deviceColors] || "text-gray-600 bg-gray-100"
+            const status: "proper" | "improper" = data.efficiencyStatus === "proper" ? "proper" : "improper"
 
             return (
               <div key={deviceName} className="p-4 border border-gray-200 rounded-lg hover:shadow-md transition-shadow">
@@ -85,12 +85,11 @@ export default function DeviceOverview({ deviceData }: DeviceOverviewProps) {
                     <span className="font-medium">{data.totalEnergy.toFixed(2)} kWh</span>
                   </div>
 
-                  <div className="space-y-1">
-                    <div className="flex justify-between text-sm">
-                      <span className="text-gray-600">Efficiency</span>
-                      <span className="font-medium">{data.efficiency.toFixed(1)}%</span>
-                    </div>
-                    <Progress value={data.efficiency} className="h-2" />
+                  <div className="flex justify-between items-center text-sm">
+                    <span className="text-gray-600">Efficiency</span>
+                    <Badge variant={status === "proper" ? "default" : "destructive"}>
+                      {status === "proper" ? "Proper" : "Improper"}
+                    </Badge>
                   </div>
 
                   <div className="flex justify-between text-sm">
