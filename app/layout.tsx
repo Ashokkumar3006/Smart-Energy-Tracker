@@ -6,9 +6,9 @@ import "./globals.css" // Assuming you have a globals.css
 const inter = Inter({ subsets: ["latin"] })
 
 export const metadata: Metadata = {
-  title: "Smart Energy Monitor", // Custom title
-  description: "Professional Energy Management System",
-    generator: 'v0.dev'
+  title: "Smart Energy Tracker", // Custom title
+  description: "TRACK.SAVE.SUSTAIN",
+  generator: 'v0.dev'
 }
 
 export default function RootLayout({

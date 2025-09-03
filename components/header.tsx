@@ -30,8 +30,8 @@ export default function Header({ connection, onRetryConnection, sidebarCollapsed
               <Zap className="h-6 w-6 text-white" />
             </div>
             <div>
-              <h1 className="text-xl font-bold text-gray-900">Smart Energy Monitor</h1>
-              <p className="text-sm text-gray-500">Professional Energy Management System</p>
+              <h1 className="text-xl font-bold text-gray-900">Smart Energy Tracker</h1>
+              <p className="text-sm text-gray-500">TRACK.SAVE.SUSTAIN</p>
             </div>
           </div>
         </div>
